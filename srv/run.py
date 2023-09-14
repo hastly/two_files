@@ -18,8 +18,6 @@ def create_app():
     app = web.Application()
 
     config = {
-        "msg": os.environ.get(f"{APP_NAME}_MSG", APP_NAME),
-        "dsn": os.environ.get(f"{APP_NAME}_DSN", None),
         "buff_suze": os.environ.get(f"{APP_NAME}_BUFF_SIZE", 10000),
         "lookup_distance": os.environ.get(f"{APP_NAME}_LOOKUP_DISTANCE", 10),
         "similar_threshold": os.environ.get(f"{APP_NAME}_SIMILAR_THRESHOLD", 0.33),

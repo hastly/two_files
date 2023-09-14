@@ -41,10 +41,6 @@ black = "poetry run black ."
 ruff = "ruff check srv --fix --verbose"
 mypy = "mypy -p srv --install-types --non-interactive --pretty --show-error-codes --ignore-missing-imports"
 qa = ["black", "ruff", "mypy"]
-[tool.poe.tasks.fill_data]
-script = "srv.run:fix_db"
-envfile = ".env"
-print_result = true
 
 [tool.ruff]
 line-length = 111
