@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: two-files-service
+spec:
+  selector:
+    app: two-files
+  ports:
+  - protocol: "TCP"
+    port: 8080
+    targetPort: 8080
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: two-files
+spec:
+  selector:
+    matchLabels:
+      app: two-files
+  replicas: 4
+  template:
+    metadata:
+      labels:
+        app: two-files
+    spec:
+      containers:
+      - name: two-files
+        image: two-files:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080

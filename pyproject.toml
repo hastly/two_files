@@ -1,0 +1,62 @@
+[tool.poetry]
+name = "two-files"
+version = "0.1.0"
+description = ""
+authors = ["Kostya Gonciarou <Konstantin_Goncharov@epam.com>"]
+readme = "README.md"
+packages = [{include = "srv"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aiohttp = "^3.8.5"
+aiofiles = "^23.2.1"
+loguru = "^0.7.2"
+aiopg = {extras = ["sa"], version = "^1.4.0"}
+aiohttp-jinja2 = "^1.5.1"
+aiohttp-swagger = {extras = ["performance"], version = "^1.0.16"}
+
+[tool.poetry.group.check]
+optional = true
+[tool.poetry.group.check.dependencies]
+ruff = "^0.0.288"
+black = "^23.9.1"
+mypy = "^1.5.1"
+pytest = "^7.4.2"
+pytest-asyncio = "^0.21.1"
+pytest-aiohttp = "^1.0.5"
+poethepoet = "^0.22.1"
+
+[tool.poe.tasks]
+buildrun = "docker build -f Dockerfile_run -t two-files:latest ."
+buildtest = "docker build -f Dockerfile_test -t two-files-test:latest ."
+buildqa = "docker build -f Dockerfile_qa -t two-files-qa:latest ."
+dockrun = "docker run -p 8080:8080 two-files"
+docktest = "docker run two-files-test"
+dockqa = "docker run two-files-qa"
+pods = "kubectl apply -f deploy.yaml"
+droppodsA = "kubectl delete service two-files-service"
+droppodsB = "kubectl delete deployment two-files"
+droppods = ["droppodsA", "droppodsB"]
+black = "poetry run black ."
+ruff = "ruff check srv --fix --verbose"
+mypy = "mypy -p srv --install-types --non-interactive --pretty --show-error-codes --ignore-missing-imports"
+qa = ["black", "ruff", "mypy"]
+[tool.poe.tasks.fill_data]
+script = "srv.run:fix_db"
+envfile = ".env"
+print_result = true
+
+[tool.ruff]
+line-length = 111
+[tool.ruff.pydocstyle]
+convention = "numpy"
+
+[tool.black]
+line-length = 111
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
